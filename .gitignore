@@ -1,1 +1,4 @@
-/coursework2_source-main/data/
+/venv/
+/.idea/
+
+/.pytest_cache/
