@@ -11,9 +11,9 @@ comments_dao = CommentsDAO("data/comments.json")
 
 logger = logging.getLogger("basic")
 
+
 @posts_blueprint.route('/')
 def posts_all():
-
     logger.debug("Запрошены все посты")
     try:
         posts = posts_dao.get_all()
@@ -22,9 +22,8 @@ def posts_all():
         return "Что-то пошло не так"
 
 
-@posts_blueprint.route('/posts/<int:post_bk >/')
+@posts_blueprint.route('/posts/<int:post_pk>/')
 def posts_one(post_pk):
-
     logger.debug(f"Запрошен пост {post_pk}")
     try:
         post = posts_dao.get_by_pk(post_pk)
@@ -38,6 +37,7 @@ def posts_one(post_pk):
             abort(404)
         number_of_comments = len(comments)
         return render_template("post.html", post=post, comments=comments, number_of_comments=number_of_comments)
+
 
 @posts_blueprint.errorhandler(404)
 def post_error(e):

@@ -44,3 +44,56 @@ class TestPostsDao:
         assert post["pk"] == post_pk, "Номер полученного поста не соответствует запрошенному"
 
     # получение по пользователю
+    def test_get_by_user_check_type(self, posts_dao):
+        posts = posts_dao.get_by_user("leo")
+        assert type(posts) == list, "Результат поиска по пользователю должен быть списком"
+        assert type(posts[0]) == dict, "Элементы, найденные поиском по пользователю, должны быть словарями"
+
+    def test_get_get_by_user_has_keys(self, posts_dao, keys_expected):
+        post = posts_dao.get_by_user("leo")[0]
+        post_keys = set(post.keys())
+        assert post_keys == keys_expected, "Полученные ключи неверны"
+
+    parameters_to_get_by_user = [
+        ("leo", [1, 5]),
+        ("hank", [3, 7]),
+        ("johnny", [2, 6]),
+        ("Александр Яковлев", [])
+    ]
+
+    @pytest.mark.parametrize("user_name, correct_pks", parameters_to_get_by_user)
+    def test_get_by_user_correct_match(self, posts_dao, user_name, correct_pks):
+        posts = posts_dao.get_by_user(user_name)
+
+        pks = []
+        for post in posts:
+            pks.append(post["pk"])
+        assert pks == correct_pks, f"Неверный список постов для {user_name}"
+
+    # поиск
+    def test_search_check_type(self, posts_dao):
+        posts = posts_dao.search("а")
+        assert type(posts) == list, "Результат поиска должен быть списком"
+        assert type(posts[0]) == dict, "Элементы, найденные поиском, должны быть словарями"
+
+    def test_search_has_keys(self, posts_dao, keys_expected):
+        post = posts_dao.search("а")[0]
+        post_keys = set(post.keys())
+        assert post_keys == keys_expected, "Полученные ключи неверны"
+
+    queries_and_response = [
+        ("еда", [1]),
+        ("000000", []),
+        ("Еда", [1]),
+        ("дом", [2, 7, 8]),
+        ("а", list(range(1, 8 + 1)))
+    ]
+
+    @pytest.mark.parametrize("query, correct_pks", queries_and_response)
+    def test_search_correct_match(self, posts_dao, query, correct_pks):
+        posts = posts_dao.search(query)
+
+        pks = []
+        for post in posts:
+            pks.append(post["pk"])
+        assert pks == correct_pks, f"Неверный поиск по запросу {query}"
