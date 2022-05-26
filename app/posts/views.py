@@ -1,7 +1,7 @@
 import logging
 from json import JSONDecodeError
 
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, request
 from app.posts.dao.posts_dao import PostsDAO
 from app.posts.dao.comments_dao import CommentsDAO
 
@@ -46,9 +46,27 @@ def post_error(e):
 
 @posts_blueprint.route('/search/')
 def posts_search():
-    return "Поиск по постам"
+    query = request.args.get('s', "")
+    if query != "":
+        posts = posts_dao.search(query)
+        number_of_posts = len(posts)
+    else:
+        posts = []
+        number_of_posts = 0
+    return render_template("search.html", query=query, posts=posts, number_of_posts=number_of_posts)
 
 
 @posts_blueprint.route('/users/<username>/')
 def posts_by_user(username):
-    return "Поиск по пользователям"
+    posts = posts_dao.get_by_user(username)
+    count_posts = len(posts)
+
+    return render_template('user-feed.html', posts=posts, count_posts=count_posts)
+
+@posts_blueprint.route('/bookmarks')
+def posts_by_bookmarks():
+    return render_template('bookmarks.html')
+
+@posts_blueprint.route('/tag/')
+def posts_by_tag():
+    return render_template('tag.html')
