@@ -29,9 +29,9 @@
             <div class="item__top">
                 <a href="{{ post.poster_name }}" class="item__head">
                     <div class="item__ava-wrap">
-                        <img src="/users/{{ post.poster_avatar}}" alt="" class="item__ava" width="47">
+                        <img src="{{ post.poster_avatar }}" alt="" class="item__ava" width="47">
                     </div>
-                    <span class="item__username">{{ post.poster_name}}</span>
+                    <span class="item__username">{{ post.poster_name }}</span>
                 </a>
                 <button type="button" class="item__bookmark-btn">
                     <img src="/static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
@@ -51,14 +51,14 @@
                     <p class="item__comments-counter">{{ number_of_comments }} комментария</p>
                     <div class="item__counter">
                         <img src="/static/img/eye.png" alt="" class="item__counter-icon" width="26">
-                        <span class="item__counter-text">1023</span>
+                        <span class="item__counter-text">{{ post.views_count }}</span>
                     </div>
                 </div>
                 <div class="item__comments">
 
                     {% for comment in comments %}
                     <p class="item__comment">
-                        <b>{{ comment.commenter_name}}:</b> {{ comment.comment }}
+                        <b>{{ comment.commenter_name }}:</b> {{ comment.comment }}
                     </p>
                     {% endfor %}
                 </div>
